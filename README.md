@@ -12,7 +12,7 @@
 ## Project Management Information
 
 Management board (private access): https://trello.com/b/zuq18n1C/tinyml
-Source code repository (private access): https://bitbucket.org/theresarajr1/tinyml/
+Source code repository (private access): https://github.com/RahulTheresaraj/Tiny-Federated-Learning
 
 ### Revision History
 | Date       |   Version     |  Description |
@@ -45,6 +45,37 @@ Source code repository (private access): https://bitbucket.org/theresarajr1/tiny
 ![Sequence Diagram](Images/Sequence Diagram.jpg)
 
 ## Implementation:
+ open the terminal and run these commands
+
+ Clone the repository into a local machine using:
+
+ ```sh
+ git clone https://github.com/RahulTheresaraj/Tiny-Federated-Learning.git
+ ```
+ 
+ Go to the folder
+ ```sh
+ cd Tiny-Federated-Learning
+ ```
+Install these dependencies before running the file:
+```sh
+pip install torch
+pip install torch-vision
+pip install visdom
+pip install path
+
+```
+
+To run this progran from Tiny-Federated-Learning folder
+```sh
+- Server :
+python src/server/fedavg.py
+
+- To Monitor the federated learning:
+Run 'python -m visdom.server' on terminal
+Go check 'localhost:8097' on your browser
+
+```
 
 
 ## Software Process Management
@@ -71,7 +102,7 @@ Duration: 01/21/2023 - 02/3/2023
 1. Research on Object detection.
 2. Research on Pre-trained models for Object detection.
 3. Building a pre-trained object detection.
-4. Test the Pre-trained model.
+4. Understanding and Testing the Pre-trained model.
 
 #### Contributions:
 1. Rahul Theresaraj,
@@ -98,11 +129,11 @@ Duration: 02/4/2023 - 02/17/2023
 *****
 
 #### Sprint 3
-Duration: 02/18/2023 - 03/01/2023
+Duration: 02/18/2023 - 03/02/2023
 ##### Tasks to be Completed
 1. Research on federated learning
-2. experimenting with flwr framework
-3. experimenting with tensorflow framwework
+2. Understanding and experimenting with flwr framework
+3. Understanding and experimenting with tensorflow framwework
 
 
 
@@ -115,7 +146,7 @@ Duration: 02/18/2023 - 03/01/2023
 *****
 
 #### Sprint 4
-Duration: 03/02/2023 - 03/20/2023
+Duration: 03/04/2023 - 03/17/2023
 ##### Tasks to be Completed
 1. Researching on pruning a model 
 2. Researching on pruning on pre-built model
@@ -132,16 +163,42 @@ Duration: 03/02/2023 - 03/20/2023
 *****
 
 #### Sprint 5
-Duration: 03/21/2023 - 04/06/2023
+Duration: 03/18/2023 - 03/31/2023
 ##### Tasks to be Completed
-1. implementation on federated learning algorithm
-2. experimenting on pruning the model.
+1. implementation on other federated learning frameworks
+2. understanding and experimenting on model pruning.
 
 
 
 #### Contributions:
 1. Rahul Theresaraj,
 
+
+#### Sprint Retrospection:
+*****
+*****
+
+#### Sprint 6
+Duration: 04/01/2023 - 04/14/2023
+##### Tasks to be Completed
+1. working on tiny federated learning
+
+#### Contributions:
+1. Rahul Theresaraj,
+
+#### Sprint Retrospection:
+*****
+*****
+
+#### Sprint 7
+Duration: 04/15/2023 - 04/28/2023
+##### Tasks to be Completed
+1. Researching on Bandwidth communication in Federated learning
+2. understanding bandwidth communication by analyzing the code.
+
+
+#### Contributions:
+1. Rahul Theresaraj,
 
 #### Sprint Retrospection:
 *****
