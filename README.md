@@ -9,6 +9,13 @@
  - Dr. Phu Phung
  - Dr. Ahmed El Ouadrhiri
 
+ ### Company Sponsor and Mentors
+ - UDRI
+   - 
+
+## Project code Reference:
+- https://github.com/KarhouTam/FL-bench
+
 ## Project Management Information
 
 Management board (private access): https://trello.com/b/zuq18n1C/tinyml
@@ -25,6 +32,13 @@ Source code repository (private access): https://github.com/RahulTheresaraj/Tiny
 
 ## Project Context and Scope
 - Research in the fields of machine learning and embedded systems known as "TinyML" focuses on the kinds of models that may be used on compact, low-power hardware, such as microcontrollers. It provides edge devices with low-latency, low-power, and low-bandwidth model inference. The goal of this research is to develop a machine learning model that can be used in low-power, low-memory embedded devices, although it is extremely unlikely that this model can be implemented in such a device due to its high memory and compute requirements. We utilize the best model that can be used to operate it on a small edge device or an embedded device from the result of our study into the best machine learning model for embedded devices. The Scope of the project is to create a machine learning model that can be deployed and utilized to gather data from embedded devices like an Arduino or Bluefruit device. Also try this concept on various devices that gather data and deliver it to a single cloud server.
+
+## Federated Learning:
+- A new approach called Federated Learning has been introduced, where only learning parameters of Deep Neural Network (DNN) are required to be communicated between the central server and the participants.
+
+## Tiny Machine learning:
+- Research in the fields of machine learning and embedded systems known as "TinyML" focuses on the kinds of models that may be used on compact, low-power hardware, such as microcontrollers. It provides edge devices with low-latency, low-power, and low-bandwidth model inference. The goal of this research is to develop a machine learning model that can be used in low-power, low-memory embedded devices, although it is extremely unlikely that this model can be implemented in such a device due to its high memory and compute requirements. We utilize the best model that can be used to operate it on a small edge device or an embedded device from the result of our study into the best machine learning model for embedded devices. The Scope of the project is to create a machine learning model that can be deployed and utilized to gather data from embedded devices like an Arduino or Bluefruit device. Also try this concept on various devices that gather data and deliver it to a single cloud server.
+
 
 ## System Analysis
 ### Use cases:
@@ -44,7 +58,8 @@ Source code repository (private access): https://github.com/RahulTheresaraj/Tiny
 
 ![Sequence Diagram](Images/Sequence Diagram.jpg)
 
-## Implementation:
+## Environment Setup:
+- This project source code has been cloned from another author(https://github.com/KarhouTam/FL-bench), I am using this source code to increase the communication cost by pruning and increasing bandwidth range.
  open the terminal and run these commands
 
  Clone the repository into a local machine using:
@@ -199,6 +214,56 @@ Duration: 04/15/2023 - 04/28/2023
 
 #### Contributions:
 1. Rahul Theresaraj,
+
+#### Sprint Retrospection:
+*****
+*****
+
+#### Sprint 8
+Duration: 05/07/2023 - 05/20/2023
+##### Tasks to be Completed
+1. Analyzing the data.
+2. Analyzing dataset and model for results.
+
+
+
+#### Contributions:
+1. Rahul Theresaraj,
+
+
+#### Sprint Retrospection:
+*****
+*****
+
+#### Sprint 9
+Duration: 05/21/2023 - 05/26/2023
+##### Tasks to be Completed
+1. Research on the Pruned model.
+2. Building a pruned model using Pytorch.
+3. Research on different pruned models.
+
+
+
+#### Contributions:
+1. Rahul Theresaraj,
+
+
+#### Sprint Retrospection:
+*****
+*****
+
+#### Sprint 10
+Duration: 06/26/2023 - 06/02/2023
+##### Tasks to be Completed
+1. Implementing a pruned model for  federated learning.
+2. Testing the pruned model for federated learning.
+3. Testing the model for better accuracy.
+
+
+
+#### Contributions:
+1. Rahul Theresaraj,
+
 
 #### Sprint Retrospection:
 *****
