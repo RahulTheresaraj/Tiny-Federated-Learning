@@ -1,3 +1,4 @@
+# import dependencies
 import pickle
 import sys
 import json
@@ -24,6 +25,7 @@ from src.utils import LOG_DIR, fix_random_seed, trainable_params
 from src.models import MODEL_DICT
 from src.args import get_fedavg_argparser
 from src.client.fedavg import FedAvgClient
+
 
 
 class FedAvgServer:
@@ -146,7 +148,7 @@ class FedAvgServer:
 
             self.aggregate(delta_cache, weight_cache)
             self.log_info()
-            print(self.aggregate)
+            #print(self.aggregate)
 
     def test(self):
         loss_before, loss_after = [], []
@@ -205,10 +207,9 @@ class FedAvgServer:
         
 
             
-        print("***********************1")
-        print(weight_cache)
-
-        print("***********************2")
+        # print("***********************1")
+        #print(weight_cache)
+        #print("***********************2")
         
         delta_list = [list(delta.values()) for delta in delta_cache]
         aggregated_delta = [
@@ -274,8 +275,8 @@ class FedAvgServer:
             for i, acc in enumerate(acc_range):
                 if acc_before >= acc and acc_before > max_acc:
                     self.logger.log(
-                        "{} achieved {}%({:.2f}%) at epoch: {}, {}".format(
-                            self.algo, acc, acc_before, E, self.weights 
+                        "{} achieved {}%({:.2f}%) at epoch: {}".format(
+                            self.algo, acc, acc_before, E
                         )
                     )
                     max_acc = acc_before
@@ -292,8 +293,8 @@ class FedAvgServer:
             for i, acc in enumerate(acc_range):
                 if acc_after >= acc and acc_after > max_acc:
                     self.logger.log(
-                        "{} achieved {}%({:.2f}%) at epoch: {} with weights: {}".format(
-                            self.algo, acc, acc_after, self.weights
+                        "{} achieved {}%({:.2f}%) at epoch: {} ".format(
+                            self.algo, acc, acc_after, E
                         )
                     )
                     max_acc = acc_after
@@ -311,8 +312,8 @@ class FedAvgServer:
             for i, acc in enumerate(acc_range):
                 if acc_before >= acc and acc_before > max_acc:
                     self.logger.log(
-                        "{} achieved {}%({:.2f}%) at epoch: {} with weights :{}".format(
-                            self.algo, acc, acc_before, E, self.weights
+                        "{} achieved {}%({:.2f}%) at epoch: {}".format(
+                            self.algo, acc, acc_before, E
                         )
                     )
                     max_acc = acc_before
@@ -329,8 +330,8 @@ class FedAvgServer:
             for i, acc in enumerate(acc_range):
                 if acc_after >= acc and acc_after > max_acc:
                     self.logger.log(
-                        "{} achieved {}%({:.2f}%) at epoch: {} with weights: {}".format(
-                            self.algo, acc, acc_after, E, self.weights
+                        "{} achieved {}%({:.2f}%) at epoch: {}".format(
+                            self.algo, acc, acc_after, E
                         )
                     )
                     max_acc = acc_after

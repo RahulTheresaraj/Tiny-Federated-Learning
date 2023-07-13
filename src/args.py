@@ -8,7 +8,7 @@ def get_fedavg_argparser() -> ArgumentParser:
         "-m",
         "--model",
         type=str,
-        default="lenet5",
+        default="mobile",
         choices=["lenet5", "2nn", "avgcnn", "mobile", "res18", "alex"],
     )
     parser.add_argument(

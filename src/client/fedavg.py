@@ -6,7 +6,6 @@ from typing import Dict, List, Tuple
 
 import torch
 from path import Path
-from rich.console import Console
 from torch.optim import SGD
 from torch.utils.data import DataLoader, Subset
 from torchvision.transforms import Compose, Normalize
@@ -20,7 +19,7 @@ from data.utils.datasets import DATASETS
 
 
 class FedAvgClient:
-    def __init__(self, model: DecoupledModel, args: Namespace, logger: Console):
+    def __init__(self, model: DecoupledModel, args: Namespace, logger):
         self.args = args
         self.device = torch.device(
             "cuda" if self.args.client_cuda and torch.cuda.is_available() else "cpu"
@@ -36,7 +35,7 @@ class FedAvgClient:
             raise FileNotFoundError(f"Please partition {args.dataset} first.")
 
         self.data_indices: List[List[int]] = partition["data_indices"]
-
+        #print("participation: ", partition)
         transform = Compose(
             [Normalize(MEAN[self.args.dataset], STD[self.args.dataset])]
         )
@@ -45,10 +44,10 @@ class FedAvgClient:
 
         self.dataset = DATASETS[self.args.dataset](
             root=_PROJECT_DIR / "data" / args.dataset,
-            args=args.dataset_args,
             transform=transform,
             target_transform=target_transform,
         )
+
 
         self.trainloader: DataLoader = None
         self.testloader: DataLoader = None
@@ -140,10 +139,12 @@ class FedAvgClient:
         verbose=False,
     ) -> Tuple[List[torch.nn.Parameter], int, Dict]:
         self.client_id = client_id
+        #print("1",client_id)
         self.load_dataset()
+        #print("1", new_parameters)
         self.set_parameters(new_parameters)
         eval_stats = self.train_and_log(verbose=verbose)
-
+ 
         if return_diff:
             delta = OrderedDict()
             for (name, p0), p1 in zip(
@@ -243,3 +244,5 @@ class FedAvgClient:
                 self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
+
+
