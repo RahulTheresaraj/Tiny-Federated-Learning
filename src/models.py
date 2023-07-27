@@ -1,12 +1,10 @@
 from collections import OrderedDict
-from typing import Dict, List, Optional, OrderedDict, Tuple, Type, Union
+from typing import Dict, List, OrderedDict, Type
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models as models
-import torch.optim as optim
-from torch.nn.utils import prune
 
 
 class DecoupledModel(nn.Module):
@@ -42,7 +40,6 @@ class DecoupledModel(nn.Module):
             for module in list(self.base.modules()) + list(self.classifier.modules())
             if isinstance(module, nn.Dropout)
         ]
-
 
     def forward(self, x: torch.Tensor):
         out = self.classifier(F.relu(self.base(x)))
@@ -83,31 +80,10 @@ class DecoupledModel(nn.Module):
         return feature_list
 
 
-class PrunedModel(DecoupledModel):
-    def __init__(self, pruning_rate: float):
-        super(PrunedModel, self).__init__()
-        self.pruning_rate = pruning_rate
-
-    def apply_pruning(self):
-        parameters = self.get_prunable_parameters()
-        prune.global_unstructured(
-            parameters,
-            pruning_method=prune.L1Unstructured,
-            amount=self.pruning_rate,
-        )
-
-    def get_prunable_parameters(self):
-        parameters = []
-        for name, module in self.base.named_modules():
-            if isinstance(module, (nn.Conv2d, nn.Linear)):
-                parameters.append((module, name + ".weight"))
-        return parameters
-
-
 # CNN used in FedAvg
-class FedAvgCNN(PrunedModel):
-    def __init__(self, dataset: str, pruning_rate: float):
-        super(FedAvgCNN, self).__init__(pruning_rate)
+class FedAvgCNN(DecoupledModel):
+    def __init__(self, dataset: str):
+        super(FedAvgCNN, self).__init__()
         config = {
             "mnist": (1, 1024, 10),
             "medmnistS": (1, 1024, 11),
@@ -135,14 +111,15 @@ class FedAvgCNN(PrunedModel):
                 pool2=nn.MaxPool2d(2),
                 flatten=nn.Flatten(),
                 fc1=nn.Linear(config[dataset][1], 512),
+                
             )
         )
         self.classifier = nn.Linear(512, config[dataset][2])
+        print(config[dataset][0])
 
-
-class LeNet5(PrunedModel):
-    def __init__(self, dataset: str, pruning_rate: float) -> None:
-        super(LeNet5, self).__init__(pruning_rate)
+class LeNet5(DecoupledModel):
+    def __init__(self, dataset: str) -> None:
+        super(LeNet5, self).__init__()
         config = {
             "mnist": (1, 256, 10),
             "medmnistS": (1, 256, 11),
@@ -176,12 +153,13 @@ class LeNet5(PrunedModel):
                 fc2=nn.Linear(120, 84),
             )
         )
+
         self.classifier = nn.Linear(84, config[dataset][2])
 
 
-class TwoNN(PrunedModel):
-    def __init__(self, dataset: str, pruning_rate: float):
-        super(TwoNN, self).__init__(pruning_rate)
+class TwoNN(DecoupledModel):
+    def __init__(self, dataset):
+        super(TwoNN, self).__init__()
         config = {
             "mnist": (784, 10),
             "medmnistS": (784, 11),
@@ -222,7 +200,7 @@ class TwoNN(PrunedModel):
 
 
 class MobileNetV2(DecoupledModel):
-    def __init__(self, dataset, pruning_rate=None, num_classes=10):
+    def __init__(self, dataset):
         super(MobileNetV2, self).__init__()
         config = {
             "mnist": 10,
@@ -244,53 +222,18 @@ class MobileNetV2(DecoupledModel):
         # NOTE: If you don't want parameters pretrained, set `pretrained` as False
         pretrained = True
         self.base = models.mobilenet_v2(
-            pretrained=pretrained,
-            progress=True,
+            weights=models.MobileNet_V2_Weights.IMAGENET1K_V2 if pretrained else None
         )
         self.classifier = nn.Linear(
-            self.base.classifier[-1].in_features, num_classes
-        )
-        self.base.classifier[-1] = nn.Identity()
-
-        if pruning_rate is not None:
-            self.pruning_rate = pruning_rate
-            self.apply_weight_pruning()
-
-    def apply_weight_pruning(self):
-        parameters_to_prune = []
-        for name, module in self.named_modules():
-            if isinstance(module, (nn.Conv2d, nn.Linear)):
-                parameters_to_prune.append((module, "weight"))
-
-        prune.global_unstructured(
-            parameters_to_prune,
-            pruning_method=prune.L1Unstructured,
-            amount=self.pruning_rate,
+            self.base.classifier[1].in_features, config[dataset]
         )
 
-    def forward(self, x):
-        if x.shape[1] == 1:
-            x = torch.repeat_interleave(x, 3, dim=1)
-        return super().forward(x)
-
-    def get_all_features(self, x, detach=True):
-        if x.shape[1] == 1:
-            x = torch.repeat_interleave(x, 3, dim=1)
-        return super().get_all_features(x, detach)
-
-    def get_final_features(self, x, detach=True):
-        if x.shape[1] == 1:
-            x = torch.repeat_interleave(x, 3, dim=1)
-        return super().get_final_features(x, detach)
+        self.base.classifier[1] = nn.Identity()
 
 
-
-
-
-
-class ResNet18(PrunedModel):
-    def __init__(self, dataset: str, pruning_rate: float):
-        super(ResNet18, self).__init__(pruning_rate)
+class ResNet18(DecoupledModel):
+    def __init__(self, dataset):
+        super(ResNet18, self).__init__()
         config = {
             "mnist": 10,
             "medmnistS": 11,
@@ -318,23 +261,23 @@ class ResNet18(PrunedModel):
 
     def forward(self, x):
         if x.shape[1] == 1:
-            x = torch.repeat_interleave(x, 3, dim=1)
+            x = torch.expand_copy(x, (x.shape[0], 3, *x.shape[2:]))
         return super().forward(x)
 
     def get_all_features(self, x, detach=True):
         if x.shape[1] == 1:
-            x = torch.repeat_interleave(x, 3, dim=1)
+            x = torch.expand_copy(x, (x.shape[0], 3, *x.shape[2:]))
         return super().get_all_features(x, detach)
 
     def get_final_features(self, x, detach=True):
         if x.shape[1] == 1:
-            x = torch.repeat_interleave(x, 3, dim=1)
+            x = torch.expand_copy(x, (x.shape[0], 3, *x.shape[2:]))
         return super().get_final_features(x, detach)
 
 
-class AlexNet(PrunedModel):
-    def __init__(self, dataset: str, pruning_rate: float):
-        super().__init__(pruning_rate)
+class AlexNet(DecoupledModel):
+    def __init__(self, dataset):
+        super().__init__()
         # NOTE: AlexNet does not support datasets with data size smaller than (64 x 64)
         config = {"covid19": 4, "celeba": 2, "tiny_imagenet": 200}
 
@@ -349,7 +292,7 @@ class AlexNet(PrunedModel):
         self.base.classifier[-1] = nn.Identity()
 
 
-MODEL_DICT: Dict[str, Type[PrunedModel]] = {
+MODEL_DICT: Dict[str, Type[DecoupledModel]] = {
     "lenet5": LeNet5,
     "avgcnn": FedAvgCNN,
     "2nn": TwoNN,
