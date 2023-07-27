@@ -277,7 +277,7 @@ Duration: 06/26/2023 - 07/02/2023
 *****
 *****
 #### Sprint 11
-Duration: 07/03/2023 - 06/25/2023
+Duration: 07/03/2023 - 07/25/2023
 ##### Tasks to be Completed
 1. analysing the code what it takes in for model update.
 2. Succesful implementaion of Bandwidth estimation.
