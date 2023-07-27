@@ -14,12 +14,16 @@
    - 
 
 ## Project code Reference:
-- https://github.com/KarhouTam/FL-bench
+```sh 
+https://github.com/KarhouTam/FL-bench
+```
 
 ## Project Management Information
 
-Management board (private access): https://trello.com/b/zuq18n1C/tinyml
-Source code repository (private access): https://github.com/RahulTheresaraj/Tiny-Federated-Learning
+Source code repository (private access): 
+```sh
+https://github.com/RahulTheresaraj/Tiny-Federated-Learning
+```
 
 ### Revision History
 | Date       |   Version     |  Description |
@@ -28,10 +32,12 @@ Source code repository (private access): https://github.com/RahulTheresaraj/Tiny
 
 
 ## Overview
-- These days, there are gadgets like AI cameras and AI electronics. These devices use machine learning to make sense of noisy sensor data, but this is difficult for embedded devices since they are small and have limited memory and processing capacity. TinyML is necessary because machine learning models need a lot of computing power. With TinyML, we can install and execute a neural network model on a tiny edge device which consumes less power. With that model, it will be tested on several edge devices that can utilize a this machine learning model that can communicate the results of trained data to the server while retaining the rest of the data in the edge device.
+- In recent years, there is an emerging technology in the tech field known as Tiny Federated Learning, TFL for short. The TFL is derived from insertion of two machine learning fields which are TinyML and Federated Learning. TinyML  is deployment of machine learning models on resource-constrained devices, such as microcontrollers and low-powered embedded systems.  These have limited computational capabilities i.e, low processing power, memory and energy resources which makes it difficult to run models with large dataset and Federated learning is a machine learning approach that allows multiple devices or servers to train a model while preserving data on the local devices. The TFL  approach enables federated learning on small embedded devices with low computational resources. 
+
 
 ## Project Context and Scope
-- Research in the fields of machine learning and embedded systems known as "TinyML" focuses on the kinds of models that may be used on compact, low-power hardware, such as microcontrollers. It provides edge devices with low-latency, low-power, and low-bandwidth model inference. The goal of this research is to develop a machine learning model that can be used in low-power, low-memory embedded devices, although it is extremely unlikely that this model can be implemented in such a device due to its high memory and compute requirements. We utilize the best model that can be used to operate it on a small edge device or an embedded device from the result of our study into the best machine learning model for embedded devices. The Scope of the project is to create a machine learning model that can be deployed and utilized to gather data from embedded devices like an Arduino or Bluefruit device. Also try this concept on various devices that gather data and deliver it to a single cloud server.
+- Tiny Federated learning also known as TFL is an approach that deals with the intersection of two fields, each field has its challenges and together few of the challenges can be adapted. But it's still has few challenges that are yet to be resolved and those challenges in TFL are determining the Bandwidth communication or Bandwidth range and effective communication, As the federated learning model requires lot of computational resources as it deals with larger dataset and models, To use that in a embedded device is like going overboard and to send data or update to the server from an embedded device might result in loss of data while transmission, so it necessary to predict an estimated bandwidth to optimize communication efficiency.
+- The Main motivation of this project is to determine the estimated bandwidth communication in Tiny federated learning and depending on the estimated bandwidth, the communication cost can be reduced to further evolve the bandwidth range.
 
 ## Federated Learning:
 - A new approach called Federated Learning has been introduced, where only learning parameters of Deep Neural Network (DNN) are required to be communicated between the central server and the participants.
@@ -40,27 +46,11 @@ Source code repository (private access): https://github.com/RahulTheresaraj/Tiny
 - Research in the fields of machine learning and embedded systems known as "TinyML" focuses on the kinds of models that may be used on compact, low-power hardware, such as microcontrollers. It provides edge devices with low-latency, low-power, and low-bandwidth model inference. The goal of this research is to develop a machine learning model that can be used in low-power, low-memory embedded devices, although it is extremely unlikely that this model can be implemented in such a device due to its high memory and compute requirements. We utilize the best model that can be used to operate it on a small edge device or an embedded device from the result of our study into the best machine learning model for embedded devices. The Scope of the project is to create a machine learning model that can be deployed and utilized to gather data from embedded devices like an Arduino or Bluefruit device. Also try this concept on various devices that gather data and deliver it to a single cloud server.
 
 
-## System Analysis
-### Use cases:
-- The use case diagram shown in the figure below shows the communication between the embedded device framework and the end user, where each capability and communication will be recorded and carried out appropriately. The primary goal of this design diagram is to explain how each module communicates with the others.
-- The user character in this case provides data, such as real-time camera/sensor data or a video/image.
-- The embedded device examines the data supplied by the user before attempting object detection by training the data to look at things. The embedded device also does unsupervised training on the data to identify all the objects, then label the unidentified data and provides an update to the server.
-
-![Use-Case Diagram](Images/Use-case Diagram.jpg)
-
-### Sequence Diagram:
-- The Below diagram depicts the Sequence Diagram which shows how users send data from cameras, sensors, or as images or videos to various embedded devices. The embedded device does unsupervised object detection, which tries analyze the data and identifies the objects and label them accordingly.
--The unlabeled data is then updated and labeled in that embedded device. The device then transmits the model's updated data to the server and other embedded devices.
-- If it is unable to identify the object, it transmits to the server certain weights containing the information of the unlabeled object.
-- The server features a federated learning model that can recognize or learn the data to recognize and label the objects. 
-- The server is now attempting to examine the weights and assign a label to the data.
-- Then, The Server sends the updated information in the form of weights to all the embedded devices and those devices updates the information.
-
-![Sequence Diagram](Images/Sequence Diagram.jpg)
 
 ## Environment Setup:
-- This project source code has been cloned from another author(https://github.com/KarhouTam/FL-bench), I am using this source code to increase the communication cost by pruning and increasing bandwidth range.
- open the terminal and run these commands
+- This project source code has been cloned from another author(https://github.com/KarhouTam/FL-bench), I am using this source code of Federated Averaging to estimate bandwidth communication..
+ 
+open the terminal and run these commands
 
  Clone the repository into a local machine using:
 
@@ -72,14 +62,21 @@ Source code repository (private access): https://github.com/RahulTheresaraj/Tiny
  ```sh
  cd Tiny-Federated-Learning
  ```
+ 
 Install these dependencies before running the file:
 ```sh
 pip install torch
 pip install torch-vision
 pip install visdom
 pip install path
-
 ```
+
+Install the dataset CIFAR10 dataset
+```sh
+cd data/utils
+python run.py -d cifar10 -a 0.1 -cn 100
+```
+ The command above splits the CIFAR-10 dataset into into 100 subset for 100 clients according to the Dirichlet partitioning(0.1)
 
 To run this progran from Tiny-Federated-Learning folder
 ```sh
@@ -91,6 +88,29 @@ Run 'python -m visdom.server' on terminal
 Go check 'localhost:8097' on your browser
 
 ```
+## Implementtaion:
+ Here, The main objective was to build an estimation of Bandwidth,
+ The mathematical formula to estimate bandwidth in Federated Averaging is  ``` W * C * R ```
+ Where, 
+ - W is the model update size
+ - C is number of clients 
+ - R is number of Communication Rounds, which is the number of times the model update is sent to the server.
+ 
+Using the Source code, we find the model update is stored in tensors and we convert the tensors to bytes as we need model update in bytes,
+- example, we have a tensor in format of size ```(100,100,32)``` and to convert that to bytes by taking product of the tensor size value ```100*100*32``` which is ```320000``` and this is in float32 format so we multiply that by ```4```, we get ```1280000 bytes``` as model update size.
+- If we consider number of clients as ```100``` and number of epoch or communication rounds as ```100```. we get,
+-- Bandwidth = ```1280000``` bytes * ```100``` clients * ```100``` Rounds = ```12800000000 bytes```.
+- But Bandwidth is estimated in megabyte's. So, 
+-- Bandwidth in MB = Bandwidth in bytes/(```1024 *1024```) = ```12207.03 MB```.
+
+Here, In this project the client sends out model update in form of delta tensors, which is the newly updated parameters in the form of tensor after training to the server.
+I have implemented Bandwidth estimator script that takes in the required values to estimate bandwidth for Federated Averaging. 
+The bandwidth estimation is done by taking the delta update as model size and communication rounds as global epoch and number of clients is the given value when you download the dataset,```python run.py -d cifar10 -a 0.1 -cn 100```. The cn represents number of clients that has a value 100, so select number of clients you want to test before downloading your dataset.
+
+
+Results: 
+I tested out using number of clients has 1 and got the follwoing output:
+![Estimated Bandwidth](Images/bandwidth_output.jpg)
 
 
 ## Software Process Management
@@ -112,12 +132,10 @@ Duration: 01/09/2023 - 01/20/2023
 *****
 
 #### Sprint 1
-Duration: 01/21/2023 - 02/3/2023
+Duration: 01/21/2023 - 02/15/2023
 ##### Tasks to be Completed
-1. Research on Object detection.
-2. Research on Pre-trained models for Object detection.
-3. Building a pre-trained object detection.
-4. Understanding and Testing the Pre-trained model.
+1. Research on how TinyML works.
+2. Research on various implementation of TInyML
 
 #### Contributions:
 1. Rahul Theresaraj,
@@ -128,10 +146,10 @@ Duration: 01/21/2023 - 02/3/2023
 *****
 
 #### Sprint 2
-Duration: 02/4/2023 - 02/17/2023
+Duration: 02/16/2023 - 03/01/2023
 ##### Tasks to be Completed
-1. Research on unsupervised object detection.
-2. Research on Federated learning.
+1. Research on Federated learning
+2. Research on Different Algorithms on Federated learning
 
 
 
@@ -144,11 +162,9 @@ Duration: 02/4/2023 - 02/17/2023
 *****
 
 #### Sprint 3
-Duration: 02/18/2023 - 03/02/2023
+Duration: 03/02/2023 - 03/28/2023
 ##### Tasks to be Completed
-1. Research on federated learning
-2. Understanding and experimenting with flwr framework
-3. Understanding and experimenting with tensorflow framwework
+1. Research on optimizating communication in Federated learning
 
 
 
@@ -161,11 +177,9 @@ Duration: 02/18/2023 - 03/02/2023
 *****
 
 #### Sprint 4
-Duration: 03/04/2023 - 03/17/2023
+Duration: 03/29/2023 - 04/16/2023
 ##### Tasks to be Completed
-1. Researching on pruning a model 
-2. Researching on pruning on pre-built model
-3. Researching on pruning on federated learning
+1. Analyzing the source code.
 
 
 
@@ -178,10 +192,9 @@ Duration: 03/04/2023 - 03/17/2023
 *****
 
 #### Sprint 5
-Duration: 03/18/2023 - 03/31/2023
+Duration: 04/17/2023 - 04/30/2023
 ##### Tasks to be Completed
-1. implementation on other federated learning frameworks
-2. understanding and experimenting on model pruning.
+1. Analyzing the source to check dataset and communication.
 
 
 
@@ -194,9 +207,9 @@ Duration: 03/18/2023 - 03/31/2023
 *****
 
 #### Sprint 6
-Duration: 04/01/2023 - 04/14/2023
+Duration: 05/01/2023 - 05/17/2023
 ##### Tasks to be Completed
-1. working on tiny federated learning
+1. Working on the code to check communication of data from client and server.
 
 #### Contributions:
 1. Rahul Theresaraj,
@@ -206,10 +219,10 @@ Duration: 04/01/2023 - 04/14/2023
 *****
 
 #### Sprint 7
-Duration: 04/15/2023 - 04/28/2023
+Duration: 05/18/2023 - 05/31/2023
 ##### Tasks to be Completed
 1. Researching on Bandwidth communication in Federated learning
-2. understanding bandwidth communication by analyzing the code.
+2. 
 
 
 #### Contributions:
@@ -220,10 +233,9 @@ Duration: 04/15/2023 - 04/28/2023
 *****
 
 #### Sprint 8
-Duration: 05/07/2023 - 05/20/2023
+Duration: 06/01/2023 - 06/11/2023
 ##### Tasks to be Completed
-1. Analyzing the data.
-2. Analyzing dataset and model for results.
+1. What are different research used using bandwidth in federated learning
 
 
 
@@ -236,11 +248,9 @@ Duration: 05/07/2023 - 05/20/2023
 *****
 
 #### Sprint 9
-Duration: 05/21/2023 - 05/26/2023
+Duration: 06/12/2023 - 06/25/2023
 ##### Tasks to be Completed
-1. Research on the Pruned model.
-2. Building a pruned model using Pytorch.
-3. Research on different pruned models.
+1. Building a Bandwidth estimator code.
 
 
 
@@ -253,12 +263,24 @@ Duration: 05/21/2023 - 05/26/2023
 *****
 
 #### Sprint 10
-Duration: 06/26/2023 - 06/02/2023
+Duration: 06/26/2023 - 07/02/2023
 ##### Tasks to be Completed
-1. Implementing a pruned model for  federated learning.
-2. Testing the pruned model for federated learning.
-3. Testing the model for better accuracy.
+1. analyzing the bandwidth estimator to know how it works
 
+
+
+#### Contributions:
+1. Rahul Theresaraj,
+
+
+#### Sprint Retrospection:
+*****
+*****
+#### Sprint 11
+Duration: 07/03/2023 - 06/25/2023
+##### Tasks to be Completed
+1. analysing the code what it takes in for model update.
+2. Succesful implementaion of Bandwidth estimation.
 
 
 #### Contributions:
