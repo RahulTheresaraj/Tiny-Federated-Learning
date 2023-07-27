@@ -110,7 +110,7 @@ The bandwidth estimation is done by taking the delta update as model size and co
 
 Results: 
 I tested out using number of clients has 1 and got the follwoing output:
-![Estimated Bandwidth](Images/bandwidth_output.jpg)
+![Estimated Bandwidth](Images/bandwidth_output.png)
 
 
 ## Software Process Management
