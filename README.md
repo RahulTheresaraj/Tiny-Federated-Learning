@@ -1,6 +1,6 @@
 # CPS 595 - Software Engineering Project
 
-# Project Title:  TinyML
+# Project Title:  Bandwidth Estimation for Tiny Federated Learning
 
 ### Team Members
  - Rahul Theresaraj
