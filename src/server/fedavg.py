@@ -17,6 +17,8 @@ from rich.progress import track
 from tqdm import tqdm
 import time
 
+
+
 _PROJECT_DIR = Path(__file__).parent.parent.parent.abspath()
 
 sys.path.append(_PROJECT_DIR)
@@ -25,6 +27,9 @@ from src.utils import LOG_DIR, fix_random_seed, trainable_params
 from src.models import MODEL_DICT
 from src.args import get_fedavg_argparser
 from src.client.fedavg import FedAvgClient
+
+
+from src.bandwidth_estimator import BandwidthEstimator
 
 
 
@@ -42,6 +47,8 @@ class FedAvgServer:
         fix_random_seed(self.args.seed)
         with open(_PROJECT_DIR / "data" / self.args.dataset / "args.json", "r") as f:
             self.args.dataset_args = json.load(f)
+        
+        self.viz = Visdom() 
 
         # get client party info
         self.train_clients: List[int] = None
@@ -66,6 +73,14 @@ class FedAvgServer:
         self.trainable_params_name, init_trainable_params = trainable_params(
             self.model, requires_name=True
         )
+      
+
+        self.estimator = BandwidthEstimator(
+            model_size=self.get_model_size(),
+            num_clients=self.client_num_in_total,
+            num_communication_rounds=self.args.global_epoch,
+        )
+
         # client_trainable_params is for pFL, which outputs exclusive model per client
         # global_params_dict is for regular FL, which outputs a single global model
         if self.unique_model:
@@ -118,6 +133,14 @@ class FedAvgServer:
         if default_trainer:
             self.trainer = FedAvgClient(deepcopy(self.model), self.args, self.logger)
 
+    
+    def get_model_size(self):
+        # Calculate the size of the delta model update (model_size) from the trainable parameters
+        model_size = 0
+        for param in trainable_params(self.model):
+            model_size += param.numel() * param.element_size()
+        return model_size
+
     def train(self):
         for E in self.train_progress_bar:
             self.current_epoch = E
@@ -129,6 +152,28 @@ class FedAvgServer:
                 self.test()
 
             self.selected_clients = self.client_sample_stream[E]
+
+            # Measure bandwidth before training each client
+            estimated_bandwidth, num_clients, num_communication_rounds, model_size_bytes = self.estimator.measure_bandwidth()
+            print(f"Estimated Bandwidth: {estimated_bandwidth:.2f} megabytes")
+            print(f"Number of Clients: {num_clients}")
+            print(f"Number of Communication Rounds: {num_communication_rounds}")
+            print(f"Model Size: {model_size_bytes} bytes")
+            
+            
+
+
+            self.viz.line(
+                [estimated_bandwidth],
+                [E],
+                win="Estimated_Bandwidth",
+                update="append",
+                opts=dict(
+                    title="Estimated Bandwidth",
+                    xlabel="Communication Rounds",
+                    ylabel="Estimated Bandwidth (bytes)",
+                ),
+            )
 
             delta_cache = []
             weight_cache = []
